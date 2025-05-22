@@ -27,8 +27,25 @@ class AGAM415FiskeProjectile : public AActor
 
 	UPROPERTY(EditAnywhere)
 	UMaterial* baseMat;
+
+	UPROPERTY()
+	FLinearColor randColor;
+
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* projMat;
+
+	UPROPERTY()
+	UMaterialInstanceDynamic* dmiMat;
+
+
+
 public:
 	AGAM415FiskeProjectile();
+
+protected:
+	virtual void BeginPlay();
+
+public:
 
 	/** called when projectile hits something */
 	UFUNCTION()
