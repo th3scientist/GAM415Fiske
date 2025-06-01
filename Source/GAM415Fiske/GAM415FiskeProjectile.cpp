@@ -6,6 +6,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 AGAM415FiskeProjectile::AGAM415FiskeProjectile() 
 {
@@ -42,8 +44,10 @@ AGAM415FiskeProjectile::AGAM415FiskeProjectile()
 void AGAM415FiskeProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	// Selects a random color for the projectile and the splat decal
 	randColor = FLinearColor(UKismetMathLibrary::RandomFloatInRange(0.f, 1.f), UKismetMathLibrary::RandomFloatInRange(0.f, 1.f), UKismetMathLibrary::RandomFloatInRange(0.f, 1.f), 1.f);
 
+	// Creates a dynamic material and sets color to the random color previously created
 	dmiMat = UMaterialInstanceDynamic::Create(projMat, this);
 	ballMesh->SetMaterial(0, dmiMat);
 	dmiMat->SetVectorParameterValue("ProjColor", randColor);
@@ -59,10 +63,21 @@ void AGAM415FiskeProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 		Destroy();
 	}
 
+	if (colorP)
+	{
+		UNiagaraComponent* particleComp = UNiagaraFunctionLibrary::SpawnSystemAttached(colorP, OtherComp, NAME_None, FVector(-20.0f, 0.f, 0.f), FRotator(0.f), EAttachLocation::KeepRelativeOffset, true);
+		particleComp->SetNiagaraVariableLinearColor(FString("Random Color"), randColor);
+		ballMesh->DestroyComponent();
+		CollisionComp->BodyInstance.SetCollisionProfileName("NoCollision");
+
+	}
+
 	if (OtherActor != nullptr)
 	{
+		// Selects a random splat decal image
 		float frameNum = UKismetMathLibrary::RandomFloatInRange(0.f, 3.f);
 
+		// Creates decal at the hit location
 		auto Decal = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), baseMat, FVector(UKismetMathLibrary::RandomFloatInRange(20.f, 40.f)), Hit.Location, Hit.Normal.Rotation(), 0.f);
 		auto MatInstance = Decal->CreateDynamicMaterialInstance();
 
