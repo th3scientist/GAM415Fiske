@@ -62,18 +62,20 @@ void AGAM415FiskeProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 
 		Destroy();
 	}
-
-	if (colorP)
-	{
-		UNiagaraComponent* particleComp = UNiagaraFunctionLibrary::SpawnSystemAttached(colorP, OtherComp, NAME_None, FVector(-20.0f, 0.f, 0.f), FRotator(0.f), EAttachLocation::KeepRelativeOffset, true);
-		particleComp->SetNiagaraVariableLinearColor(FString("Random Color"), randColor);
-		ballMesh->DestroyComponent();
-		CollisionComp->BodyInstance.SetCollisionProfileName("NoCollision");
-
-	}
+	
+	
 
 	if (OtherActor != nullptr)
 	{
+		if (colorP)
+		{
+			// Spawns a particle system with a color that matches the projectile and decal
+			UNiagaraComponent* particleComp = UNiagaraFunctionLibrary::SpawnSystemAttached(colorP, HitComp, NAME_None, FVector( 0.f), FRotator(0.f), EAttachLocation::KeepRelativeOffset, true);
+			particleComp->SetNiagaraVariableLinearColor(FString("RandomColor"), randColor);
+			ballMesh->DestroyComponent();
+			CollisionComp->BodyInstance.SetCollisionProfileName("NoCollision");
+
+		}
 		// Selects a random splat decal image
 		float frameNum = UKismetMathLibrary::RandomFloatInRange(0.f, 3.f);
 
