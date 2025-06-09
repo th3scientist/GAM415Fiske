@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "PerlinProcTerrain.h"
 
 AGAM415FiskeProjectile::AGAM415FiskeProjectile() 
 {
@@ -86,5 +87,11 @@ void AGAM415FiskeProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 		MatInstance->SetVectorParameterValue("Color", randColor);
 		MatInstance->SetScalarParameterValue("Frame", frameNum);
 
+		APerlinProcTerrain* procTerrain = Cast<APerlinProcTerrain>(OtherActor);
+
+		if (procTerrain) 
+		{
+			procTerrain->AlterMesh(Hit.ImpactPoint);
+		}
 	}
 }
