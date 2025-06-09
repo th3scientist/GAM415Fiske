@@ -33,6 +33,7 @@ void APerlinProcTerrain::Tick(float DeltaTime)
 
 }
 
+// This function deforms the terrain based on the value of Depth
 void APerlinProcTerrain::AlterMesh(FVector impactPoint)
 {
 	for (int i = 0; i < Vertices.Num(); i++)
@@ -41,6 +42,7 @@ void APerlinProcTerrain::AlterMesh(FVector impactPoint)
 
 		if (FVector(Vertices[i] - tempVector).Size() < Radius)
 		{
+			// moves the location of the vertices by the value of depth
 			Vertices[i] = Vertices[i] - Depth;
 			ProcMesh->UpdateMeshSection(sectionID, Vertices, Normals, UV0, UpVertexColors, TArray<FProcMeshTangent>());	
 		}

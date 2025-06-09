@@ -87,6 +87,7 @@ void AGAM415FiskeProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 		MatInstance->SetVectorParameterValue("Color", randColor);
 		MatInstance->SetScalarParameterValue("Frame", frameNum);
 
+		// Cast to check that that the hit actor is a procterrain
 		APerlinProcTerrain* procTerrain = Cast<APerlinProcTerrain>(OtherActor);
 
 		if (procTerrain) 
